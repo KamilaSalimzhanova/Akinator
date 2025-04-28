@@ -17,7 +17,6 @@ final class OpenAIManager {
         return OpenAI(apiToken: "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")
     }()
 
-
     
     func askAssistant(
         message: String,

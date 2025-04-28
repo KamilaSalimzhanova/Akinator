@@ -1,16 +1,19 @@
 import Foundation
 
 class MainGameViewModel: ObservableObject {
+    // MARK: - Published variables
     @Published var currentQuestionIndex: Int = 0
     @Published var resultText: String = "Is the character female?"
     @Published var isGameOver: Bool = false
     @Published var finalGuess: String? = nil
     
+    // MARK: - Private variables
     private var questionHistory: [(question: String, answer: String)] = []
     private let openAIManager = OpenAIManager.shared
     private let maxQuestions = 10
     private let chatID = 0
     
+    // MARK: - Public Functions
     func resetGame() {
         currentQuestionIndex = 0
         resultText = "Is your character female?"
@@ -30,7 +33,7 @@ class MainGameViewModel: ObservableObject {
         }
     }
     
-    
+    // MARK: - Private Functions
     private func buildQuestionPrompt() -> String {
         var prompt = """
         You are playing the game Akinator. You must guess the character by asking short yes/no questions.
