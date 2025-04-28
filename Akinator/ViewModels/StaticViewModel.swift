@@ -6,118 +6,87 @@ class StaticGameViewModel: ObservableObject {
     @Published var isGameOver: Bool = false
     @Published var finalGuess: String? = nil
     
-    private var questionHistory: [(question: String, answer: String)] = []
+    private var celebrities: [Celebrity] = []
+    private var possibleCelebrities: [Celebrity] = []
+    private var askedAttributes: Set<String> = []
     
-    private let celebrities: [String: [(question: String, answer: String)]] = [
-        "Robert Downey Jr.": [
-            ("Is this person male?", "Yes"),
-            ("Is this person an actor?", "Yes"),
-            ("Is this person American?", "Yes"),
-            ("Is this person known for playing in superhero movies?", "Yes"),
-            ("Is this person Iron Man?", "Yes")
-        ],
-        "Emma Watson": [
-            ("Is this person female?", "Yes"),
-            ("Is this person an actor?", "Yes"),
-            ("Is this person British?", "Yes"),
-            ("Is this person known for playing Hermione Granger?", "Yes"),
-            ("Has this person been involved in women's rights advocacy?", "Yes")
-        ],
-        "Albert Einstein": [
-            ("Is this person male?", "Yes"),
-            ("Is this person a scientist?", "Yes"),
-            ("Is this person known for his work in physics?", "Yes"),
-            ("Did this person receive a Nobel Prize?", "Yes"),
-            ("Is this person Albert Einstein?", "Yes")
-        ],
-        "Beyoncé": [
-            ("Is this person female?", "Yes"),
-            ("Is this person a musician?", "Yes"),
-            ("Is this person American?", "Yes"),
-            ("Has this person been part of a famous girl group?", "Yes"),
-            ("Is this person Beyoncé?", "Yes")
-        ]
-    ]
-    
-    private var possibleCelebrities: [String] = []
     private let maxQuestions = 5
     
-    private let questions: [String] = [
-        "Is this person male?",
-        "Is this person an actor?",
-        "Is this person a musician?",
-        "Is this person American?",
-        "Is this person British?",
-        "Has this person won an Oscar?",
-        "Has this person ever been a part of a famous movie franchise?",
-        "Is this person known for their role in superhero movies?",
-        "Is this person still alive?",
-        "Is this person older than 50?",
-        "Is this person known for their work in science or technology?",
-        "Has this person written a book?",
-        "Is this person involved in political activism?",
-        "Is this person a sports player?",
-        "Is this person known for their role in a popular TV show?",
-        "Has this person ever been married?",
-        "Is this person known for their philanthropic work?",
-        "Is this person famous for their social media presence?",
-        "Is this person a billionaire?"
+    private let questions: [(attribute: String, questionText: String)] = [
+        ("male", "Is this person male?"),
+        ("actor", "Is this person an actor?"),
+        ("musician", "Is this person a musician?"),
+        ("american", "Is this person American?"),
+        ("british", "Is this person British?"),
+        ("superhero_actor", "Is this person known for superhero movies?"),
+        ("alive", "Is this person still alive?"),
+        ("older_than_50", "Is this person older than 50?"),
+        ("scientist", "Is this person a scientist?"),
+        ("oscar_winner", "Has this person won an Oscar?"),
+        ("billionaire", "Is this person a billionaire?")
     ]
     
+    private let initialCelebrities: [Celebrity] = [
+        Celebrity(name: "Robert Downey Jr.", attributes: ["male": true, "actor": true, "musician": false, "american": true, "british": false, "superhero_actor": true, "alive": true, "older_than_50": true, "scientist": false, "oscar_winner": false, "billionaire": false]),
+        Celebrity(name: "Emma Watson", attributes: ["male": false, "actor": true, "musician": false, "american": false, "british": true, "superhero_actor": false, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": false, "billionaire": false]),
+        Celebrity(name: "Albert Einstein", attributes: ["male": true, "actor": false, "musician": false, "american": true, "british": false, "superhero_actor": false, "alive": false, "older_than_50": true, "scientist": true, "oscar_winner": true, "billionaire": false]),
+        Celebrity(name: "Beyoncé", attributes: ["male": false, "actor": false, "musician": true, "american": true, "british": false, "superhero_actor": false, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": false, "billionaire": true]),
+        Celebrity(name: "Leonardo DiCaprio", attributes: ["male": true, "actor": true, "musician": false, "american": true, "british": false, "superhero_actor": false, "alive": true, "older_than_50": true, "scientist": false, "oscar_winner": true, "billionaire": false]),
+        Celebrity(name: "Taylor Swift", attributes: ["male": false, "actor": false, "musician": true, "american": true, "british": false, "superhero_actor": false, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": false, "billionaire": true]),
+        Celebrity(name: "Stephen Hawking", attributes: ["male": true, "actor": false, "musician": false, "american": false, "british": true, "superhero_actor": false, "alive": false, "older_than_50": true, "scientist": true, "oscar_winner": false, "billionaire": false]),
+        Celebrity(name: "Adele", attributes: ["male": false, "actor": false, "musician": true, "american": false, "british": true, "superhero_actor": false, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": false, "billionaire": false]),
+        Celebrity(name: "Tom Holland", attributes: ["male": true, "actor": true, "musician": false, "american": false, "british": true, "superhero_actor": true, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": false, "billionaire": false]),
+        Celebrity(name: "Elon Musk", attributes: ["male": true, "actor": false, "musician": false, "american": true, "british": false, "superhero_actor": false, "alive": true, "older_than_50": true, "scientist": true, "oscar_winner": false, "billionaire": true]),
+        Celebrity(name: "Billie Eilish", attributes: ["male": false, "actor": false, "musician": true, "american": true, "british": false, "superhero_actor": false, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": true, "billionaire": false]),
+        Celebrity(name: "Chris Hemsworth", attributes: ["male": true, "actor": true, "musician": false, "american": false, "british": false, "superhero_actor": true, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": false, "billionaire": false]),
+        Celebrity(name: "Margot Robbie", attributes: ["male": false, "actor": true, "musician": false, "american": false, "british": false, "superhero_actor": false, "alive": true, "older_than_50": false, "scientist": false, "oscar_winner": false, "billionaire": false]),
+        Celebrity(name: "Albert Einstein", attributes: ["male": true, "actor": false, "musician": false, "american": true, "british": false, "superhero_actor": false, "alive": false, "older_than_50": true, "scientist": true, "oscar_winner": true, "billionaire": false])
+    ]
+    
+    init() {
+        resetGame()
+    }
+    
     func resetGame() {
+        celebrities = initialCelebrities
+        possibleCelebrities = celebrities
+        askedAttributes = []
         currentQuestionIndex = 0
-        resultText = questions[currentQuestionIndex]
         isGameOver = false
         finalGuess = nil
-        questionHistory.removeAll()
-        possibleCelebrities = Array(celebrities.keys)
+        generateNextQuestion()
     }
     
     func submitAnswer(_ answer: String) {
-        questionHistory.append((question: resultText, answer: answer))
+        guard currentQuestionIndex < questions.count else { return }
         
-        possibleCelebrities = possibleCelebrities.filter { celebrity in
-            guard let celebrityQuestions = celebrities[celebrity] else { return false }
-            
-            for (index, entry) in celebrityQuestions.prefix(currentQuestionIndex + 1).enumerated() {
-                if entry.answer != (index < questionHistory.count ? questionHistory[index].answer : "") {
-                    return false
-                }
-            }
-            return true
+        let currentAttribute = questions[currentQuestionIndex].attribute
+        
+        if answer == "Yes" {
+            possibleCelebrities = possibleCelebrities.filter { $0.attributes[currentAttribute] == true }
+        } else if answer == "No" {
+            possibleCelebrities = possibleCelebrities.filter { $0.attributes[currentAttribute] == false }
         }
+        askedAttributes.insert(currentAttribute)
         
-        if currentQuestionIndex + 1 < maxQuestions {
-            currentQuestionIndex += 1
-            generateNextQuestion()
+        if possibleCelebrities.count <= 1 || askedAttributes.count >= maxQuestions {
+            finishGame()
         } else {
-            finalGuess = possibleCelebrities.first ??  ([
-                "Robert Downey Jr.",
-                "Emma Watson",
-                "Albert Einstein",
-                "Beyoncé",
-                "Taylor Swift",
-                "Leonardo DiCaprio",
-                "Scarlett Johansson",
-                "Morgan Freeman",
-                "Will Smith",
-                "Tom Hanks",
-                "Oprah Winfrey",
-                "Johnny Depp",
-                "Jennifer Lawrence",
-                "Chris Hemsworth",
-                "Dwayne Johnson",
-                "Keanu Reeves",
-                "Angelina Jolie",
-                "Meryl Streep",
-                "Ryan Reynolds",
-                "Brad Pitt"
-            ].randomElement() ?? "")
-            isGameOver = true
+            generateNextQuestion()
         }
     }
     
+    private func finishGame() {
+        finalGuess = possibleCelebrities.first?.name ?? "I couldn't guess!"
+        isGameOver = true
+    }
+    
     func generateNextQuestion() {
-        resultText = questions[currentQuestionIndex]
+        if let next = questions.first(where: { !askedAttributes.contains($0.attribute) }) {
+            resultText = next.questionText
+            currentQuestionIndex = questions.firstIndex(where: { $0.attribute == next.attribute }) ?? 0
+        } else {
+            finishGame()
+        }
     }
 }
