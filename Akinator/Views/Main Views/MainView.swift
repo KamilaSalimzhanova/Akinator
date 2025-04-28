@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject var vm: StaticGameViewModel
     var body: some View {
         NavigationStack {
             ZStack {
@@ -26,5 +27,5 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView()
+    MainView().environmentObject(StaticGameViewModel())
 }
