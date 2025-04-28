@@ -5,12 +5,13 @@ struct TextView: View {
     var body: some View {
         Text(text)
             .font(.title2)
+            .foregroundColor(.white)
             .fontWeight(.semibold)
             .frame(maxWidth: .infinity)
             .padding()
-            .background(LinearGradient(colors: [.red, .green, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .foregroundColor(.black)
-            .cornerRadius(10)
+            .background(Color.black)
+            .cornerRadius(12)
+            .shadow(radius: 4)
     }
 }
 

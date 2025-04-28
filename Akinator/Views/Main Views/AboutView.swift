@@ -35,7 +35,7 @@ struct AboutView: View {
                 .padding(.horizontal)
                 .shadow(radius: 5)
                 Spacer()
-                HomeBackButton(presentationMode: _dismiss)
+                HomeBackButton(presentationMode: _dismiss, frameMax: true)
             
             }
             .padding()

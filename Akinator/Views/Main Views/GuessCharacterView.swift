@@ -7,7 +7,11 @@ struct GuessCharacterView: View {
         ZStack {
             BackgroundView().ignoresSafeArea()
             VStack {
-                HomeBackButton(presentationMode: _presentationMode)
+                HStack {
+                    Spacer()
+                    HomeBackButton(presentationMode: _presentationMode)
+                        .padding(.horizontal)
+                }
                 Spacer()
                 VStack(spacing: 12) {
                     Text("Make up real or imaginary character. I will try to guess 🤓 ")
@@ -30,9 +34,9 @@ struct GuessCharacterView: View {
                 
                 Spacer()
                 
-                Button(action: {
-                    // сюда добавишь действие
-                }) {
+                NavigationLink {
+                    GameView()
+                } label: {
                     Text("Let's start!!! 🪄")
                         .font(.system(size: 20, weight: .bold))
                         .foregroundColor(.black)
@@ -43,7 +47,7 @@ struct GuessCharacterView: View {
                         .shadow(radius: 4)
                         .padding(.horizontal, 64)
                 }
-                
+
                 Spacer()
             }
         }.navigationBarBackButtonHidden(true)
