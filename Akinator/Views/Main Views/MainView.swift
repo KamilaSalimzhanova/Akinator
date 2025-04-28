@@ -11,7 +11,7 @@ struct MainView: View {
                         .padding()
                     
                     HStack {
-                        NavigationLink(destination: GameView()) {
+                        NavigationLink(destination: GuessCharacterView()) {
                             TextView(text: "Start the game")
                         }
                         NavigationLink(destination: AboutView()) {

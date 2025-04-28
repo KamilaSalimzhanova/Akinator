@@ -1,21 +1,28 @@
 import Foundation
-import SwiftUI
 
-class OpenAIViewModel: ObservableObject {
-    @Published var resultText: String = "Thinking about your character..."
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
+final class OpenAIViewModel {
+//private let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String ?? ""
+    private func getOpenAIAPIKey() -> String {
+            // Update the path to point to the Resources folder
+            if let path = Bundle.main.path(forResource: "Resources/info", ofType: "plist"),
+               let secrets = NSDictionary(contentsOfFile: path),
+               let apiKey = secrets["API_KEY"] as? String {
+                return apiKey
+            }
+            return "no foiudn"
+        }
+
+
     
-    private let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_KEY") as? String ?? ""
-    
-    func fetchOpenAIResponse(prompt: String) {
+    func fetchOpenAIResponse(prompt: String, completion: @escaping (String) -> Void) {
+        let apiKey = getOpenAIAPIKey()
         guard !apiKey.isEmpty else {
-            self.errorMessage = "API key is missing."
+            completion("API key is missing.")
             return
         }
         
         guard let url = URL(string: "https://api.openai.com/v1/completions") else {
-            self.errorMessage = "Invalid API URL."
+            completion("Invalid API URL.")
             return
         }
         
@@ -25,7 +32,7 @@ class OpenAIViewModel: ObservableObject {
         request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
         
         let body: [String: Any] = [
-            "model": "gpt-4o-mini",
+            "model": "gpt-4",
             "prompt": prompt,
             "max_tokens": 100
         ]
@@ -34,40 +41,17 @@ class OpenAIViewModel: ObservableObject {
             let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
             request.httpBody = jsonData
         } catch {
-            self.errorMessage = "Failed to encode request body."
+            completion("Failed to encode request body.")
             return
         }
         
-        isLoading = true
-        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { _, _, error in
             if let error = error {
-                DispatchQueue.main.async {
-                    self?.errorMessage = "Request failed: \(error.localizedDescription)"
-                    self?.isLoading = false
-                }
+                completion("Request failed: \(error.localizedDescription)")
                 return
             }
             
-            guard let data = data else {
-                DispatchQueue.main.async {
-                    self?.errorMessage = "No data received from the server."
-                    self?.isLoading = false
-                }
-                return
-            }
-            
-            do {
-                let jsonResponse = try JSONDecoder().decode(OpenAIResponse.self, from: data)
-                DispatchQueue.main.async {
-                    self?.resultText = jsonResponse.choices.first?.text ?? "No response text"
-                    self?.isLoading = false
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    self?.errorMessage = "Failed to decode response."
-                    self?.isLoading = false
-                }
-            }
+            completion("Response received") 
         }
         
         task.resume()

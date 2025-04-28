@@ -4,17 +4,9 @@ struct AboutView: View {
     @State private var fadeIn = false
     @Environment(\.presentationMode) var dismiss
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topTrailing) {
             BackgroundView().ignoresSafeArea()
-            VStack(spacing: 20) {
-                Text("About the Game 🪄")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.white)
-                    .shadow(radius: 5)
-                    .opacity(fadeIn ? 1 : 0)
-                    .animation(.easeIn(duration: 1.2), value: fadeIn)
-                
+            VStack {
                 Spacer()
                 ScrollView(.vertical, showsIndicators: false) {
                     Text("""
@@ -43,6 +35,7 @@ struct AboutView: View {
                 .padding(.horizontal)
                 .shadow(radius: 5)
                 Spacer()
+                HomeBackButton(presentationMode: _dismiss)
             
             }
             .padding()
@@ -51,19 +44,8 @@ struct AboutView: View {
             fadeIn = true
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    dismiss.wrappedValue.dismiss()
-                }) {
-                    Text("Main View")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                        .padding(8)
-                        .shadow(radius: 5)
-                }
-            }
-        }
+        .navigationTitle("About the Game 🪄")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
