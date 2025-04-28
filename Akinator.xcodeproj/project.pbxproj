@@ -33,6 +33,7 @@
 			isa = PBXGroup;
 			children = (
 				8ED3895F2DBF9D5500B4A431 /* Akinator */,
+				8ED3898E2DBFAB8F00B4A431 /* New Group */,
 				8ED3895E2DBF9D5500B4A431 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +44,13 @@
 				8ED3895D2DBF9D5500B4A431 /* Akinator.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8ED3898E2DBFAB8F00B4A431 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
