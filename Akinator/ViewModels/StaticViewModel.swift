@@ -91,7 +91,28 @@ class StaticGameViewModel: ObservableObject {
             currentQuestionIndex += 1
             generateNextQuestion()
         } else {
-            finalGuess = possibleCelebrities.first
+            finalGuess = possibleCelebrities.first ??  ([
+                "Robert Downey Jr.",
+                "Emma Watson",
+                "Albert Einstein",
+                "Beyoncé",
+                "Taylor Swift",
+                "Leonardo DiCaprio",
+                "Scarlett Johansson",
+                "Morgan Freeman",
+                "Will Smith",
+                "Tom Hanks",
+                "Oprah Winfrey",
+                "Johnny Depp",
+                "Jennifer Lawrence",
+                "Chris Hemsworth",
+                "Dwayne Johnson",
+                "Keanu Reeves",
+                "Angelina Jolie",
+                "Meryl Streep",
+                "Ryan Reynolds",
+                "Brad Pitt"
+            ].randomElement() ?? "")
             isGameOver = true
         }
     }
